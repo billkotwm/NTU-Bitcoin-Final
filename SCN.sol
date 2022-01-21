@@ -24,8 +24,8 @@ contract Company is ERC1155 {
 
     Action[] public actions;
 
-    mapping(address => bool) public isDirector;
-    mapping(string => bool) public isValidAction;
+    mapping(address => bool) public Director;
+    mapping(string => bool) public ValidAction;
     mapping(uint => mapping(address => bool)) public isConfirmed;
 
     event SubmitAction(
@@ -38,13 +38,13 @@ contract Company is ERC1155 {
         uint indexed acIndex
     );
 
-    modifier onlyDirector(address _director) {
-        require(isDirector[_director], "Not Director");
+    modifier isDirector(address _director) {
+        require(Director[_director], "Not Director");
         _;
     }
 
-    modifier onlyValidAction(string memory _action) {
-        require(isValidAction[_action], "Invalid Action");
+    modifier isValidAction(string memory _action) {
+        require(ValidAction[_action], "Invalid Action");
         _;
     }
 
@@ -67,9 +67,9 @@ contract Company is ERC1155 {
             address director = _directors[i];
 
             require(director != address(0), "invalid owner");
-            require(!isDirector[director], "Director not unique");
+            require(!Director[director], "Director not unique");
 
-            isDirector[director] = true;
+            Director[director] = true;
             directors.push(director);
         }
 
@@ -80,11 +80,11 @@ contract Company is ERC1155 {
 
         issue(_shares);
 
-        isValidAction["issue"] = true;
-        isValidAction["burn"] = true;
-        isValidAction["reissue"] = true;
-        isValidAction["transfer"] = true;
-        isValidAction["redeem"] = true;
+        ValidAction["issue"] = true;
+        ValidAction["burn"] = true;
+        ValidAction["reissue"] = true;
+        ValidAction["transfer"] = true;
+        ValidAction["redeem"] = true;
     }
 
     function compareString(string memory a, string memory b) public pure returns (bool) {
@@ -93,8 +93,8 @@ contract Company is ERC1155 {
 
     function submitAction(address _director, string memory _actionName, uint _amount, address _target) 
     public 
-    onlyDirector(_director)
-    onlyValidAction(_actionName)
+    isDirector(_director)
+    isValidAction(_actionName)
     {
         require(_amount > 0);
         if (compareString(_actionName, "transfer") || compareString(_actionName, "redeem")) {
@@ -119,7 +119,7 @@ contract Company is ERC1155 {
     
     function confirmAction(address _director, uint _acIndex)
     public
-    onlyDirector(_director)
+    isDirector(_director)
     notExecuted(_acIndex)
     notConfirmed(_director, _acIndex)
     {
