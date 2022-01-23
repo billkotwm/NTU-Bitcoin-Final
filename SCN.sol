@@ -58,7 +58,7 @@ contract Company is ERC1155 {
         _;
     }
 
-    constructor(string memory _name, string memory _fundingDate, uint _shares, address[] memory _directors, uint _numConfirmationsRequired) ERC1155("https://hgliu1998.github.io/SampleERC1155/api/token/{id}.json") {
+    constructor(string memory _name, string memory _fundingDate, uint _shares, address[] memory _directors, uint _numConfirmationsRequired) ERC1155("https://billkotwm.github.io/SampleERC1155/api/token/{id}.json") {
         require(_directors.length > 0, "owners required");
         require(_numConfirmationsRequired > 0 && _numConfirmationsRequired <= _directors.length, "invalid number of required confirmations");
         require(_shares > 0, "shares should be at least 1");
